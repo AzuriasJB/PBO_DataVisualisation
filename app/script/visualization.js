@@ -23,9 +23,13 @@ var Visualization = function () {
         }*/
         draw: function () {
             d3.json("data/geodata.json", function(error, data){
+                var width  = window.innerWidth;
+                var height = window.innerHeight;
+                console.log("W: " + width + " / H: " + height);
+
                 var svg = d3.select('body').append('svg');
                     
-                var projection = d3.geoMercator().scale(100).translate([400, 330]);
+                var projection = d3.geoMercator().scale(175).translate([width/2, (height/2)+100]);
                     
                 var path = d3.geoPath()
                 .projection(projection);
@@ -118,47 +122,107 @@ var Visualization = function () {
                 
                 function handleMouseClickContinent(continent) {
                     hover = false;
-                    view = "Continent";
-                    cont = continent;
-                    d3.selectAll('path')
-                        .filter(function(d) { return d.properties.continent != continent })
+                    switch(view){
+                    case"World":
+                        view = "Continent";
+                        cont = continent;
+                        // alle nicht angeklickten Kontinente ausblenden
+                        d3.selectAll('path')
+                            .filter(function(d) { return d.properties.continent != continent })
+                                .transition().duration(300)
+                            .attr('opacity', 0);
+                        
+                        // den angeklickten Kontinent hervorheben
+                        var transformString = "";
+                        switch(continent){
+                        case"Europe":
+                            //W: 1920 / H: 943
+                            transformString = "translate(" + (-1.1458*width) + "," + (-0.6362*height) + ")scale(3)";
+                            break;
+                        case"North America":
+                            transformString = "translate(-400,-400)scale(2)";
+                            break;
+                        case"South America":
+                            transformString = "translate(-1000,-1200)scale(2.5)";
+                            break;
+                        case"Asia":
+                            transformString = "translate(-2700,-1000)scale(3)";
+                            break;
+                        case"Africa":
+                            transformString = "translate(-2100,-1200)scale(3)";
+                            break;
+                        case"Oceania":
+                            transformString = "translate(-4700,-2100)scale(4)";
+                            break;
+                        default:
+                            break;
+                         }
+                        d3.selectAll('path')
+                            .filter(function(d) { return d.properties.continent == continent })
                             .transition().duration(300)
-                        .attr('opacity', 0);
-                    
-                    var transformString = "";
-                    switch(continent){
-                    case"Europe":
-                        transformString = "translate(-400,0)scale(1.5)";
+                            .attr("transform", transformString)
+                            .attr('fill',  function(d, i) { 
+                            var colorIndex = i % colors.length;
+                            console.log(colorIndex)
+                            console.log(d.properties.name);
+                            countryColors[d.properties.name] = colors[colorIndex];
+                            return colors[colorIndex];
+                            });
                         break;
-                    case"North America":
-                        transformString = "translate(50,-50)scale(1.6)";
-                        break;
-                    case"South America":
-                        transformString = "translate(-300,-700)scale(2.5)";
-                        break;
-                    case"Asia":
-                        transformString = "translate(-1250,-600)scale(3)";
-                        break;
-                    case"Africa":
-                        transformString = "translate(-850,-700)scale(3)";
-                        break;
-                    case"Oceania":
-                        transformString = "translate(-2200,-1250)scale(4)";
+                    case"Continent":
+                        view = "World";
+                        // alle anderen Kontinente einblenden
+                        d3.selectAll('path')
+                            .filter(function(d) { return d.properties.continent != cont })
+                                .transition().duration(300)
+                            .attr('opacity', 1);
+                        
+                        // den angeklickten Kontinent normalisieren
+                        var transformString = "";
+                        switch(continent){
+                        case"Europe":
+                            transformString = "translate(" + (1.1458*width) + "," + (0.6362*height) + ")scale(1/3)";
+                            break;
+                        case"North America":
+                            transformString = "translate(-50,+50)scale(1/1.6)";
+                            break;
+                        case"South America":
+                            transformString = "translate(1000,1200)scale(1/2.5)";
+                            break;
+                        case"Asia":
+                            transformString = "translate(1250,600)scale(1/3)";
+                            break;
+                        case"Africa":
+                            transformString = "translate(2700,1000)scale(1/3)";
+                            
+                            break;
+                        case"Oceania":
+                            transformString = "translate(4700,2100)scale(1/4)";
+                            
+                            break;
+                        default:
+                            break;
+                        }
+                        d3.selectAll('path')
+                            .filter(function(d) { return d.properties.continent == cont })
+                            .transition().duration(300)
+                            .attr("transform", transformString)
+                            .attr('fill',  function(d, i) { 
+                            if (d.properties.subregion == "South America")
+                                d.properties.subregion = "Southern America"
+                            var i;
+                            for (i=0; i<regionColors.length; i++) {
+                                if (regionColors[i][0] == d.properties.subregion) {
+                                    return regionColors[i][1];
+                                }
+                            }
+                            });
+
+                        cont = null;
                         break;
                     default:
                         break;
-                }
-                d3.selectAll('path')
-                    .filter(function(d) { return d.properties.continent == continent })
-                    .transition().duration(300)
-                    .attr("transform", transformString)
-                    .attr('fill',  function(d, i) { 
-                    var colorIndex = i % colors.length;
-                    console.log(colorIndex)
-                    console.log(d.properties.name);
-                    countryColors[d.properties.name] = colors[colorIndex];
-                    return colors[colorIndex];
-                    });
+                    }
                     hover = true;
                 };
                     
