@@ -98,6 +98,23 @@ var DataProvider = function () {
             return getValueResult;
         },
         /**
+         * Get a value from the data.
+         * @param {string} country - The country in the data in iso_a3 form.
+         * @param {number} year - The year of the parameter.
+         * @param {number} code - The numerical code of the parameter (see data source documentation).
+         * @return {number} The desired value in the data.
+        */
+        getValuebyiso: function(country, year, code) {
+            var getValueResult;
+            _data.some(function (item) {
+                if (item['iso_a3'] === country && item['Year'] === year && item['Item Code'] === code) {
+                    getValueResult = item['Value'];
+                    return true;
+                }
+            });
+            return getValueResult;
+        },
+        /**
          * Retrieve maximum value for a given parameter.
          * @param {number} code - The numerical code of the parameter (see data source documentation).
          * @return {Object} Result containing value, year, and country.
@@ -188,7 +205,7 @@ var DataProvider = function () {
             var sumAverage = 0;
             var countAverage = 0;
             _data.forEach(function (item) {
-                if (item['Region'] === region && item['Year'] === year && item['Item Code'] === code && item['Value'] !== undefined) {
+                if (item['subregion'] === region && item['Year'] === year && item['Item Code'] === code && item['Value'] !== undefined) {
                     sumAverage += Number.parseFloat(item['Value']);
                     countAverage++;
                 }
@@ -201,7 +218,7 @@ var DataProvider = function () {
             var countAverage = 0;
             console.log(continent);
             _data.forEach(function (item) {
-                if (item['Continent'] === continent && item['Year'] === year && item['Item Code'] === code && item['Value'] !== undefined) {
+                if (item['continent'] === continent && item['Year'] === year && item['Item Code'] === code && item['Value'] !== undefined) {
                     sumAverage += Number.parseFloat(item['Value']);
                     countAverage++;
                 }

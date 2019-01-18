@@ -162,11 +162,7 @@ var Visualization = function () {
                             .transition().duration(300)
                             .attr("transform", transformString)
                             .attr('fill',  function(d, i) { 
-                            var colorIndex = i % colors.length;
-                            console.log(colorIndex)
-                            console.log(d.properties.name);
-                            countryColors[d.properties.name] = colors[colorIndex];
-                            return colors[colorIndex];
+                                return ColorScale ('21032', DataProvider.getValuebyiso(d.properties.iso_a3,"2010","21032"),2010);
                             });
                         break;
                     case"Continent":
@@ -207,15 +203,8 @@ var Visualization = function () {
                             .filter(function(d) { return d.properties.continent == cont })
                             .transition().duration(300)
                             .attr("transform", transformString)
-                            .attr('fill',  function(d, i) { 
-                            if (d.properties.subregion == "South America")
-                                d.properties.subregion = "Southern America"
-                            var i;
-                            for (i=0; i<regionColors.length; i++) {
-                                if (regionColors[i][0] == d.properties.subregion) {
-                                    return regionColors[i][1];
-                                }
-                            }
+                            .attr('fill',  function(d, i) {
+                                return ColorScale ('21032', DataProvider.getAverageForContinent(d.properties.continent,"2010","21032"),2010);
                             });
 
                         cont = null;
@@ -237,45 +226,17 @@ var Visualization = function () {
                     return d.properties.name;
                     })
                 .attr('fill',  function(d, i) {
-                        if (view == "World") {
-                            for (i=0; i<continentColors.length; i++) {
-                                switch (d.properties.continent) {
-                                    case "Europe":
-                                        return continentColors[0];
-                                        break;
-                                    case "Africa":
-                                        return continentColors[1];
-                                        break;
-                                    case "North America":
-                                        return continentColors[2];
-                                        break;
-                                    case "South America":
-                                        return continentColors[3];
-                                        break;
-                                }
-                            }
-                        }
-                        /*else if (view == "Continent") {
-                            if (d.properties.subregion == "South America")
-                                d.properties.subregion = "Southern America"
-                            var i;
-                            for (i=0; i<regionColors.length; i++) {
-                                if (regionColors[i][0] == d.properties.subregion) {
-                                    return regionColors[i][1];
-                                }
-                            }
-                            //console.log("no match found for "+ d.properties.subregion);
-                        }*/
-                    })
-                    .on("mouseover", function(d, i) {
-                        handleMouseOverContinent(d.properties.continent, d.properties.name);
-                    })
-                    .on("mouseout", function(d, i) {
-                        handleMouseOutContinent(d.properties.continent);
-                    })
-                    .on("click", function(d, i) {
-                        handleMouseClickContinent(d.properties.continent);
-                      });
+                    return ColorScale ('21032', DataProvider.getAverageForContinent(d.properties.continent,"2010","21032"),2010);
+                })
+                .on("mouseover", function(d, i) {
+                    handleMouseOverContinent(d.properties.continent, d.properties.name);
+                })
+                .on("mouseout", function(d, i) {
+                    handleMouseOutContinent(d.properties.continent);
+                })
+                .on("click", function(d, i) {
+                    handleMouseClickContinent(d.properties.continent);
+                    });
             })
             
         }
