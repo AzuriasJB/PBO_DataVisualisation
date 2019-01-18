@@ -204,7 +204,7 @@ var Visualization = function () {
                             .transition().duration(300)
                             .attr("transform", transformString)
                             .attr('fill',  function(d, i) {
-                                return ColorScale ('21032', DataProvider.getAverageForContinent(d.properties.continent,"2010","21032"),2010);
+                                return ColorScale ('21032', DataProvider.getAverageForRegion(d.properties.subregion,"2010","21032"),2010);
                             });
 
                         cont = null;

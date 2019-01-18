@@ -137,7 +137,11 @@ var DataProvider = function () {
                 "Country": country
             };
         },
-
+        /**
+         * Retrieve minimum value for a given parameter.
+         * @param {number} code - The numerical code of the parameter (see data source documentation).
+         * @return {Object} Result containing value, year, and country.
+         */
         getMinValue: function (code) {
             var resultMin = 0;
             var country = 'unknown';
@@ -156,7 +160,12 @@ var DataProvider = function () {
                 "Country": country
             };
         },
-
+        /**
+         * Retrieve maximum value for a given parameter.
+         * @param {number} code - The numerical code of the parameter (see data source documentation).
+         * @param {number} yearLookUp - The year of the parameter.
+         * @return {Object} Result containing value, year, and country.
+         */
         getMaxValueYear: function (code, yearLookUp) {
             var resultMax = 0;
             var country = 'unknown';
@@ -175,7 +184,12 @@ var DataProvider = function () {
                 "Country": country
             };
         },
-
+        /**
+         * Retrieve minimum value for a given parameter.
+         * @param {number} code - The numerical code of the parameter (see data source documentation).
+         * @param {number} yearLookUp - The year of the parameter.
+         * @return {Object} Result containing value, year, and country.
+         */
         getMinValueYear: function (code, yearLookUp) {
             var resultMin = 100000;
             var country = 'unknown';
@@ -212,7 +226,13 @@ var DataProvider = function () {
             });
             return sumAverage / countAverage;
         },
-
+        /**
+         * Computes the average for a continent of a specific parameter of a given year
+         * @param {string} continent - The continent in the data.
+         * @param {number} year - The year of the parameter.
+         * @param {number} code - The numerical code of the parameter (see data source documentation).
+         * @return {number} The average value.
+         */
         getAverageForContinent: function (continent, year, code) {
             var sumAverage = 0;
             var countAverage = 0;
