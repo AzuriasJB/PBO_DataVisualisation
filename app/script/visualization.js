@@ -52,6 +52,15 @@ var Visualization = function () {
                     .domain([DataProvider.getMinValueYear(code, year).Value,DataProvider.getMaxValueYear(code, year).Value])
                     .range(['red','green']);          
                     var ColorCode = myScale(value);
+                    //console.log("Looking up: "+value+" results in "+ColorCode);
+                    return ColorCode;
+                }
+
+                function SizeScaleYear(code, value, year) {
+                    var myScale = d3.scaleLinear()
+                    .domain([DataProvider.getMinValueYear(code, year).Value,DataProvider.getMaxValueYear(code, year).Value])
+                    .range([0,50]);          
+                    var ColorCode = myScale(value);
                     return ColorCode;
                 }
 
@@ -93,6 +102,72 @@ var Visualization = function () {
                           .filter(function(d) { return d.properties.continent == cont})
                           .transition().duration(100)
                           .attr('opacity', 0.3);
+
+                        //define gradient for the circle diagram
+                        var grad = svg.append("defs").append("linearGradient").attr("id", "grad")
+                          .attr("x1", "0%").attr("x2", "0%").attr("y1", "100%").attr("y2", "0%");
+                            grad.append("stop").attr("offset", "0%").style("stop-color", "black");
+                            grad.append("stop").attr("offset", "0%").style("stop-color", "white");
+
+                        svg.selectAll('circle')
+                        .data(data.features)
+                        .enter()
+                        .filter(function(d) { return d.properties.name == country})
+                        .append('circle')
+                        .attr('r',function(d){ 
+                            var tempData = SizeScaleYear('22013', DataProvider.getValuebyiso(d.properties.iso_a3,"2010","22013"), '2010');
+                            if (tempData == false || tempData == undefined || tempData !== tempData) {
+                                tempData = 0;
+                            }
+                            return 20+tempData; 
+                        })
+                        .attr('cx', function(d) {
+                            if (d.properties.name == country) {
+                                //console.log(d3.mouse(this)[0]);
+                                //console.log("RETURNING FOR X: "+path.centroid(d)[0])
+                                //return path.centroid(d)[0];
+                                return d3.mouse(this)[0]+40;
+                            }
+                        })
+                        .attr('cy', function(d) {
+                            if (d.properties.name == country) {
+                                // console.log("RETURNING FOR Y: "+path.centroid(d)[1])
+                                //console.log(data);
+                                //console.log(grad);
+                                //return path.centroid(d)[1];
+                                return d3.mouse(this)[1];
+                            }
+                        })
+                        .attr('stroke','black')
+                        .attr('fill', function(d,i) {
+                            //dynamically change color of the circle diagram
+                            var circleColor = ColorScaleYear('21032', DataProvider.getValuebyiso(d.properties.iso_a3,"2010","21032"), '2010');
+                            var circlePercent;
+                            var tempData = DataProvider.getValuebyiso(d.properties.iso_a3,"2010","210041");
+                            if (tempData == "<2.5") {
+                                circlePercent = "2.5%";
+                            } else if (tempData == false || tempData == undefined)
+                            {
+                                circlePercent = "0%";
+                            } else {
+                                circlePercent = tempData + "%";
+                            }
+                            //console.log(circlePercent);
+                            d3.selectAll("stop")
+                                .attr("offset","0%")
+                                .transition()
+                                .style("stop-color", function(d,i) {
+                                    if (i === 0) {
+                                        return circleColor;
+                                    }
+                                    return "white";
+                                })
+                                .attr("offset", function(d,i) {
+                                    return circlePercent;
+                                });
+
+                            return "url(#grad)";
+                        })
                         break;
                       default:
                         break;
@@ -113,6 +188,8 @@ var Visualization = function () {
                         .filter(function(d) { return d.properties.continent == cont })
                         .transition().duration(300)
                         .attr('opacity', 1);
+
+                    svg.selectAll('circle').remove();
                     break;
                     default:
                     break;

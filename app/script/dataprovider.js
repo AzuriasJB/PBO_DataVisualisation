@@ -106,6 +106,12 @@ var DataProvider = function () {
         */
         getValuebyiso: function(country, year, code) {
             var getValueResult;
+
+            if (code == 210041) {
+                var yearInt = parseInt(year,10);
+                year = year + "-" + (yearInt+2);
+            }
+
             _data.some(function (item) {
                 if (item['iso_a3'] === country && item['Year'] === year && item['Item Code'] === code) {
                     getValueResult = item['Value'];
@@ -178,6 +184,7 @@ var DataProvider = function () {
                     year = item['Year'];
                 }
             });
+            //console.log("MAX VALUE "+resultMax);
             return {
                 "Value": resultMax,
                 "Year": year,
@@ -202,6 +209,7 @@ var DataProvider = function () {
                     year = item['Year'];
                 }
             });
+            //console.log("MIN VALUE "+resultMin);
             return {
                 "Value": resultMin,
                 "Year": year,
