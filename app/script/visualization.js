@@ -155,9 +155,10 @@ var Visualization = function () {
                                     .attr("x", function(d){return d3.mouse(this)[0]+40;})
                                     .attr("y", function(d){return d3.mouse(this)[1]+5;})
                                     .attr("text-anchor", "middle") 
-                                    .style('fill', 'black')
+                                    .attr("font-weight", "bold")
+                                    .style('fill', function(d){return circleColor;})
                                     .style("font-size", "18px")
-                                    .text("n. a.");
+                                    .text("n.a.");
                                 } else {
                                     circlePercent = tempData;
                                 }
