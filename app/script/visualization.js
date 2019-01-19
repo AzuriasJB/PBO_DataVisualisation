@@ -149,7 +149,15 @@ var Visualization = function () {
                                     circlePercent = "2.5";
                                 } else if (tempData == false || tempData == undefined)
                                 {
-                                    circlePercent = "0";
+                                    circlePercent = "100";
+
+                                    svg.append("text")
+                                    .attr("x", function(d){return d3.mouse(this)[0]+40;})
+                                    .attr("y", function(d){return d3.mouse(this)[1]+5;})
+                                    .attr("text-anchor", "middle") 
+                                    .style('fill', 'black')
+                                    .style("font-size", "18px")
+                                    .text("n. a.");
                                 } else {
                                     circlePercent = tempData;
                                 }
@@ -169,7 +177,8 @@ var Visualization = function () {
 
                                 return "url(#grad)";
                             })
-                        }
+                            }
+                        
                         break;
                       default:
                         break;
@@ -181,20 +190,21 @@ var Visualization = function () {
                 if(hover){
                     switch(view){
                     case"World":
-                    d3.selectAll('path')
-                        .transition().duration(300)
-                        .attr('opacity', 1);
+                        d3.selectAll('path')
+                            .transition().duration(300)
+                            .attr('opacity', 1);
                     break;
                     case"Continent":
-                    d3.selectAll('path')
-                        .filter(function(d) { return d.properties.continent == cont })
-                        .transition().duration(300)
-                        .attr('opacity', 1);
+                        d3.selectAll('path')
+                            .filter(function(d) { return d.properties.continent == cont })
+                            .transition().duration(300)
+                            .attr('opacity', 1);
 
-                    svg.selectAll('circle').remove();
-                    break;
+                        svg.selectAll('circle').remove();
+                        svg.selectAll('text').remove();
+                        break;
                     default:
-                    break;
+                        break;
                     }
                 }
                 }
