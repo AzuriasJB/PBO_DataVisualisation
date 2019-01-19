@@ -259,6 +259,11 @@ var Visualization = function () {
                         break;
                     case"Continent":
                         view = "World";
+
+                        // alle kreise entfernen
+                        svg.selectAll('circle').remove();
+                        svg.selectAll('text').remove();
+
                         // alle anderen Kontinente einblenden
                         d3.selectAll('path')
                             .filter(function(d) { return d.properties.continent != cont })
