@@ -267,11 +267,9 @@ var Visualization = function () {
                             break;
                         case"Africa":
                             transformString = "translate(2700,1000)scale(1/3)";
-                            
                             break;
                         case"Oceania":
                             transformString = "translate(4700,2100)scale(1/4)";
-                            
                             break;
                         default:
                             break;
@@ -291,6 +289,14 @@ var Visualization = function () {
                     }
                     hover = true;
                 };
+
+                // background rect for minimizing continents
+                svg.append("rect")
+                    .attr("class", "background")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .attr("fill", "white")
+                    .on("click", handleMouseClickContinent);
                     
                 svg.selectAll('path')
                 .data(data.features)
