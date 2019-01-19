@@ -145,12 +145,12 @@ var Visualization = function () {
                             var circlePercent;
                             var tempData = DataProvider.getValuebyiso(d.properties.iso_a3,"2010","210041");
                             if (tempData == "<2.5") {
-                                circlePercent = "2.5%";
+                                circlePercent = "2.5";
                             } else if (tempData == false || tempData == undefined)
                             {
-                                circlePercent = "0%";
+                                circlePercent = "0";
                             } else {
-                                circlePercent = tempData + "%";
+                                circlePercent = tempData;
                             }
                             //console.log(circlePercent);
                             d3.selectAll("stop")
@@ -163,7 +163,7 @@ var Visualization = function () {
                                     return "white";
                                 })
                                 .attr("offset", function(d,i) {
-                                    return circlePercent;
+                                    return (100-parseInt(circlePercent)) + "%";
                                 });
 
                             return "url(#grad)";
