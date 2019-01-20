@@ -8,19 +8,6 @@ var Visualization = function () {
         /**
          * Create the visualisation. This is the main application entry point.
          */
-        /*draw: function () {
-            var _greeting = '<pre>There are ' + DataProvider.getPreparedData().length + ' regions. ';
-            DataProvider.getPreparedData().forEach(function (region) {
-                _greeting += region.Region + ' has ' + region.Countries.length + ' countries.\n';
-            });
-            _greeting += 'By the way, Germany had ' + DataProvider.getValue('Germany', '2016', '21042') + ' percent of obese people in 2016.\n\n'
-            _greeting += 'Northern Africa had an average index of ' + DataProvider.getAverageForRegion('Northern Africa', '2016', '21032') + ' for political stability in 2015,\n';
-            _greeting += 'while Western Europe had ' + DataProvider.getAverageForRegion('Western Europe', '2016', '21032') + '. ';
-            var bestIndex = DataProvider.getMaxValue('21032');
-            _greeting += 'The best index was ' + bestIndex.Value + ' in ' + bestIndex.Country + ' in the year ' + bestIndex.Year + '.';
-            _greeting += '</pre>';
-            document.body.innerHTML = _greeting;
-        }*/
         draw: function () {
             d3.json("data/geodata.json", function(error, data){
                 var width  = window.innerWidth;
@@ -141,7 +128,11 @@ var Visualization = function () {
                                         //console.log(d3.mouse(this)[0]);
                                         //console.log("RETURNING FOR X: "+path.centroid(d)[0])
                                         //return path.centroid(d)[0];
-                                        return d3.mouse(this)[0]+40;
+                                        var tempData = SizeScaleYear('22013', DataProvider.getValuebyiso(d.properties.iso_a3,"2010","22013"), '2010');
+                                        if (tempData == false || tempData == undefined || tempData !== tempData) {
+                                            tempData = 0;
+                                        }
+                                        return d3.mouse(this)[0]+40+tempData;
                                     }
                                 })
                                 .attr('cy', function(d) {
