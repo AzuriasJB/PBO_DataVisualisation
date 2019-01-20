@@ -110,6 +110,19 @@ var Visualization = function () {
                                 grad.append("stop").attr("offset", "0%").style("stop-color", "black");
                                 grad.append("stop").attr("offset", "0%").style("stop-color", "white");
 
+                            svg.select("defs")
+                                .append("pattern")
+                                    .attr("id", "diagonalSchraffur")
+                                    .attr("patternUnits", "userSpaceOnUse")
+                                    .attr("width", "10")
+                                    .attr("height", "10")
+                                .append("image")
+                                    .attr("href", "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCc+CiAgPHJlY3Qgd2lkdGg9JzEwJyBoZWlnaHQ9JzEwJyBmaWxsPSd3aGl0ZScvPgogIDxwYXRoIGQ9J00tMSwxIGwyLC0yCiAgICAgICAgICAgTTAsMTAgbDEwLC0xMAogICAgICAgICAgIE05LDExIGwyLC0yJyBzdHJva2U9J2dyZXknIHN0cm9rZS13aWR0aD0nMScvPgo8L3N2Zz4K")
+                                    .attr("x", "0")
+                                    .attr("y", "0")
+                                    .attr("width", "10")
+                                    .attr("height", "10");
+
                             svg.selectAll('circle')
                             .data(data.features)
                             .enter()
@@ -159,6 +172,8 @@ var Visualization = function () {
                                     .style('fill', function(d){return circleColor;})
                                     .style("font-size", "18px")
                                     .text("n.a.");
+
+                                    return "url(#diagonalSchraffur)";
                                 } else {
                                     circlePercent = tempData;
                                 }
