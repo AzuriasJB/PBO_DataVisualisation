@@ -87,7 +87,7 @@ var Visualization = function () {
                     continentColors[i]=ColorScaleYear('22013', dataContinent[i], '2016');
                 }
                     
-                function handleMouseOverContinent(continent, country) {
+                function handleMouseOver(continent, country) {
                     if(hover){
                         switch(view){
                         case"World":
@@ -193,7 +193,16 @@ var Visualization = function () {
                                         });
 
                                     return "url(#grad)";
-                                })
+                                });
+
+                                svg.append("text")
+                                .attr("x", function(d){return d3.mouse(this)[0]+40;})
+                                .attr("y", function(d){return d3.mouse(this)[1]-40;})
+                                .attr("font-weight", "bold")
+                                .attr("text-anchor", "middle")
+                                .style('fill', "black")
+                                .style("font-size", "18px")
+                                .text(country);
                             }
                         
                         break;
@@ -203,7 +212,7 @@ var Visualization = function () {
                     }
                   }
 
-                function handleMouseOutContinent() {
+                function handleMouseOut() {
                     if(hover){
                         switch(view){
                         case"World":
@@ -226,7 +235,7 @@ var Visualization = function () {
                     }
                 }
                 
-                function handleMouseClickContinent(continent) {
+                function handleMouseClick(continent) {
                     hover = false;
                     switch(view){
                     case"World":
@@ -333,7 +342,7 @@ var Visualization = function () {
                     .attr("width", width)
                     .attr("height", height)
                     .attr("fill", "white")
-                    .on("click", handleMouseClickContinent);
+                    .on("click", handleMouseClick);
                     
                 svg.selectAll('path')
                 .data(data.features)
@@ -349,13 +358,13 @@ var Visualization = function () {
                     return ColorScale ('21032', DataProvider.getAverageForContinent(d.properties.continent,"2010","21032"),2010);
                 })
                 .on("mouseover", function(d, i) {
-                    handleMouseOverContinent(d.properties.continent, d.properties.name);
+                    handleMouseOver(d.properties.continent, d.properties.name);
                 })
                 .on("mouseout", function(d, i) {
-                    handleMouseOutContinent(d.properties.continent);
+                    handleMouseOut(d.properties.continent);
                 })
                 .on("click", function(d, i) {
-                    handleMouseClickContinent(d.properties.continent);
+                    handleMouseClick(d.properties.continent);
                     });
             })
             
