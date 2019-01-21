@@ -236,30 +236,30 @@ var Visualization = function () {
                         case"Europe":
                             //W: 1920 / H: 943
                             //transformString = "translate(" + ((-1.1458*(width/1920))*width) + "," + ((-0.6362*(height/943))*height) + ")scale(3)";
-                            transformString = "translate(" + (-1.1458*width) + "," + (-0.6362*height) + ")scale(3)";
+                            transformString = "translate(" + (-0.85*width) + "," + (-0.74*height) + ")scale(3)";
                             break;
                         case"North America":
                             //transformString = "translate(" + ((-0.2083*(width/1920))*width) + "," + ((-0.4241*(height/943))*height) + ")scale(2)";
-                            transformString = "translate(" + (-0.2083*width) + "," + (-0.4241*height) + ")scale(2)";
+                            transformString = "translate(" + (-0.1*width) + "," + (-0.45*height) + ")scale(2)";
                             break;
                         case"South America":
-                            transformString = "translate(" + (-0.5208*width) + "," + (-1.2725*height) + ")scale(2.5)";
+                            transformString = "translate(" + (-0.35*width) + "," + (-1.27*height) + ")scale(2.5)";
                             break;
                         case"Asia":
-                            transformString = "translate(" + (-1.4062*width) + "," + (-1.0604*height) + ")scale(3)";
+                            transformString = "translate(" + (-1*width) + "," + (-0.9*height) + ")scale(2.5)";
                             break;
                         case"Africa":
-                            transformString = "translate(" + (-1.0937*width) + "," + (-1.2725*height) + ")scale(3)";
+                            transformString = "translate(" + (-0.7*width) + "," + (-1.1*height) + ")scale(2.5)";
                             break;
                         case"Oceania":
-                            transformString = "translate(" + (-2.4479*width) + "," + (-2.2269*height) + ")scale(4)";
+                            transformString = "translate(" + (-2.15*width) + "," + (-2.35*height) + ")scale(4)";
                             break;
                         default:
                             break;
                         }
                         //console.log(transformString);
                         svg.selectAll('path')
-                        //.filter(function(d) { return d.properties.continent == continent })
+                        .filter(function(d) { return d.properties.continent == continent })
                         .transition().duration(300)
                         .attr("transform", transformString)
                         .attr('fill',  function(d, i) {
@@ -271,7 +271,8 @@ var Visualization = function () {
                         // alle nicht angeklickten Kontinente ausblenden
                         svg.selectAll('path')
                             .filter(function(d) { return d.properties.continent != continent })
-                                .transition().duration(300)
+                            .transition().duration(300)
+                            .attr("transform", transformString)
                             .attr('opacity', 0);
                         break;
                     case"Continent":
@@ -294,28 +295,28 @@ var Visualization = function () {
                             var transformString = "";
                             switch(continent){
                             case"Europe":
-                                transformString = "translate(" + (1.1458*width) + "," + (0.6362*height) + ")scale(1/3)";
+                                transformString = "translate(" + (0.85*width) + "," + (0.74*height) + ")scale(1/3)";
                                 break;
                             case"North America":
-                                transformString = "translate(" + (0.2083*width) + "," + (0.4241*height) + ")scale(1/2)";
+                                transformString = "translate(" + (0.1*width) + "," + (0.45*height) + ")scale(1/2)";
                                 break;
                             case"South America":
-                                transformString = "translate(" + (0.5208*width) + "," + (1.2725*height) + ")scale(1/2.5)";
+                                transformString = "translate(" + (0.35*width) + "," + (1.27*height) + ")scale(1/2.5)";
                                 break;
                             case"Asia":
-                                transformString = "translate(" + (1.4062*width) + "," + (1.0604*height) + ")scale(1/3)";
+                                transformString = "translate(" + (1*width) + "," + (0.9*height) + ")scale(1/2.5)";
                                 break;
                             case"Africa":
-                                transformString = "translate(" + (1.0937*width) + "," + (1.2725*height) + ")scale(1/3)";;
+                                transformString = "translate(" + (0.7*width) + "," + (1.1*height) + ")scale(1/2.5)";
                                 break;
                             case"Oceania":
-                                transformString = "translate(" + (2.4479*width) + "," + (2.2269*height) + ")scale(1/4)";
+                                transformString = "translate(" + (2.15*width) + "," + (2.35*height) + ")scale(1/4)";
                                 break;
                             default:
                                 break;
                             }
                             svg.selectAll('path')
-                                //.filter(function(d) { return d.properties.continent == cont })
+                                .filter(function(d) { return d.properties.continent == cont })
                                 .transition().duration(300)
                                 .attr("transform", transformString)
                                 .attr('fill',  function(d, i) {
@@ -328,7 +329,8 @@ var Visualization = function () {
                             // alle anderen Kontinente einblenden
                                 svg.selectAll('path')
                                 .filter(function(d) { return d.properties.continent != cont })
-                                    .transition().duration(300)
+                                .transition().duration(300)
+                                .attr("transform", transformString)
                                 .attr('opacity', 1);
                             /*    
                             svg.selectAll('path')
