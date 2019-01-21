@@ -35,8 +35,8 @@ var Visualization = function () {
 
                 function ColorScaleYear(code, value, year) {
                     var myScale = d3.scaleLinear()
-                    .domain([DataProvider.getMinValueYear(code, year).Value,DataProvider.getMaxValueYear(code, year).Value])
-                    .range(['red','green']);          
+                    .domain([DataProvider.getMinValueYear(code, year).Value,0,DataProvider.getMaxValueYear(code, year).Value])
+                    .range(['red', 'yellow', 'green']);         
                     var ColorCode = myScale(value);
                     //console.log("Looking up: "+value+" results in "+ColorCode);
                     return ColorCode;
