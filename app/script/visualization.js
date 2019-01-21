@@ -313,6 +313,10 @@ var Visualization = function () {
                             .on('end', function (){
                                 hover = true;
                             });
+
+                        svg.selectAll('path')
+                            .filter(function(d) { return d.properties.continent == cont })
+                            .attr('opacity', 1);
                         cont = null;
                         break;
                     default:
