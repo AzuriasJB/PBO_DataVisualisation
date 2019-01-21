@@ -243,7 +243,7 @@ var Visualization = function () {
                             break;
                         case"North America":
                             //transformString = "translate(" + ((-0.2083*(width/1920))*width) + "," + ((-0.4241*(height/943))*height) + ")scale(2)";
-                            transformString = "translate(" + (-0.2083*width) + "," + (-0.4241*height + ")scale(2)";
+                            transformString = "translate(" + (-0.2083*width) + "," + (-0.4241*height) + ")scale(2)";
                             break;
                         case"South America":
                             transformString = "translate(" + (-0.5208*width) + "," + (-1.2725*height) + ")scale(2.5)";
