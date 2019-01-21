@@ -38,6 +38,9 @@ var Visualization = function () {
                     .domain([DataProvider.getMinValueYear(code, year).Value,0,DataProvider.getMaxValueYear(code, year).Value])
                     .range(['red', 'yellow', 'green']);         
                     var ColorCode = myScale(value);
+                    if (ColorCode == ("rgb(0, 0, 0)") || year == "2001") {
+                        return "rgb(150, 150, 150)";
+                    }
                     //console.log("Looking up: "+value+" results in "+ColorCode);
                     return ColorCode;
                 }
@@ -259,7 +262,7 @@ var Visualization = function () {
                             .filter(function(d) { return d.properties.continent == continent })
                             .transition().duration(300)
                             .attr("transform", transformString)
-                            .attr('fill',  function(d, i) { 
+                            .attr('fill',  function(d, i) {
                                 return ColorScaleYear ('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"),year);
                             })
                             .on('end', function (){
@@ -368,9 +371,6 @@ var Visualization = function () {
                     console.log("New Year is: " + year);
                     svg.selectAll('path')
                     .attr('fill',  function(d, i) {
-                        if (year == "2001") {
-                            return "rgb(150,150,150)";
-                        }
                         if (view=="World") {
                             return ColorScaleYear ('21032', DataProvider.getAverageForRegion(d.properties.subregion,year,"21032"),year);
                         } else if (view=="Continent") {
