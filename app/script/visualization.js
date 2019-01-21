@@ -109,37 +109,26 @@ var Visualization = function () {
                                         .attr("y", "0")
                                         .attr("width", "10")
                                         .attr("height", "10");
-
+                                var circleOffset;
                                 svg.selectAll('circle')
                                 .data(data.features)
                                 .enter()
                                 .filter(function(d) { return d.properties.name == country})
                                 .append('circle')
                                 .attr('r',function(d){ 
-                                    var tempData = SizeScaleYear('22013', DataProvider.getValuebyiso(d.properties.iso_a3,year,"22013"), year);
-                                    if (tempData == false || tempData == undefined || tempData !== tempData) {
-                                        tempData = 0;
+                                    circleOffset = SizeScaleYear('22013', DataProvider.getValuebyiso(d.properties.iso_a3,year,"22013"), year);
+                                    if (circleOffset == false || circleOffset == undefined || circleOffset !== circleOffset) {
+                                        circleOffset = 0;
                                     }
-                                    return 20+tempData; 
+                                    return 20+circleOffset; 
                                 })
                                 .attr('cx', function(d) {
                                     if (d.properties.name == country) {
-                                        //console.log(d3.mouse(this)[0]);
-                                        //console.log("RETURNING FOR X: "+path.centroid(d)[0])
-                                        //return path.centroid(d)[0];
-                                        var tempData = SizeScaleYear('22013', DataProvider.getValuebyiso(d.properties.iso_a3,year,"22013"), year);
-                                        if (tempData == false || tempData == undefined || tempData !== tempData) {
-                                            tempData = 0;
-                                        }
-                                        return d3.mouse(this)[0]+40+tempData;
+                                        return d3.mouse(this)[0]+40+circleOffset;
                                     }
                                 })
                                 .attr('cy', function(d) {
                                     if (d.properties.name == country) {
-                                        // console.log("RETURNING FOR Y: "+path.centroid(d)[1])
-                                        //console.log(data);
-                                        //console.log(grad);
-                                        //return path.centroid(d)[1];
                                         return d3.mouse(this)[1];
                                     }
                                 })
@@ -156,7 +145,7 @@ var Visualization = function () {
                                         circlePercent = "100";
 
                                         svg.append("text")
-                                        .attr("x", function(d){return d3.mouse(this)[0]+40;})
+                                        .attr("x", function(d){return d3.mouse(this)[0]+40+circleOffset;})
                                         .attr("y", function(d){return d3.mouse(this)[1]+5;})
                                         .attr("text-anchor", "middle") 
                                         .attr("font-weight", "bold")
@@ -186,7 +175,7 @@ var Visualization = function () {
                                 });
 
                                 svg.append("text")
-                                .attr("x", function(d){return d3.mouse(this)[0]+40;})
+                                .attr("x", function(d){return d3.mouse(this)[0]+40+circleOffset;})
                                 .attr("y", function(d){return d3.mouse(this)[1]-40;})
                                 .attr("font-weight", "bold")
                                 .attr("text-anchor", "middle")
