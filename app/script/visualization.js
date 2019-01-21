@@ -23,7 +23,7 @@ var Visualization = function () {
 
                 var svg = d3.select('svg');
                     
-                var projection = d3.geoMercator().scale(175).translate([width/2, (height/2)+100]);
+                var projection = d3.geoMercator().scale(175).translate([(width/2)-200, (height/2)+100]);
                     
                 var path = d3.geoPath()
                 .projection(projection);
@@ -238,10 +238,12 @@ var Visualization = function () {
                         switch(continent){
                         case"Europe":
                             //W: 1920 / H: 943
+                            //transformString = "translate(" + ((-1.1458*(width/1920))*width) + "," + ((-0.6362*(height/943))*height) + ")scale(3)";
                             transformString = "translate(" + (-1.1458*width) + "," + (-0.6362*height) + ")scale(3)";
                             break;
                         case"North America":
-                            transformString = "translate(" + (-0.2083*width) + "," + (-0.4241*height) + ")scale(2)";
+                            //transformString = "translate(" + ((-0.2083*(width/1920))*width) + "," + ((-0.4241*(height/943))*height) + ")scale(2)";
+                            transformString = "translate(" + (-0.2083*width) + "," + (-0.4241*height + ")scale(2)";
                             break;
                         case"South America":
                             transformString = "translate(" + (-0.5208*width) + "," + (-1.2725*height) + ")scale(2.5)";
@@ -385,7 +387,7 @@ var Visualization = function () {
                     .select('div#slider')
                     .append('svg')
                     .append('g')
-                    .attr('transform', 'translate(30,30)');
+                    .attr('transform', 'translate(' + 0.1785*width + ',30)');
 
                 gTime.call(sliderTime);
             })
