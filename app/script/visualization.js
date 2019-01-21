@@ -46,9 +46,10 @@ var Visualization = function () {
                 }
 
                 function SizeScaleYear(code, value, year) {
-                    var myScale = d3.scaleLinear()
+                    var myScale = d3.scalePow()
+                    .exponent(2)
                     .domain([DataProvider.getMinValueYear(code, year).Value,DataProvider.getMaxValueYear(code, year).Value])
-                    .range([0,50]);          
+                    .range([0,200]);          
                     var ColorCode = myScale(value);
                     return ColorCode;
                 }
