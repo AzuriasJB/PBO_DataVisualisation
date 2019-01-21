@@ -33,14 +33,6 @@ var Visualization = function () {
                 var view = "World";
                 var cont = "";
 
-                function ColorScale(code, value) {
-                    var myScale = d3.scaleLinear()
-                    .domain([DataProvider.getMinValue(code).Value,DataProvider.getMaxValue(code).Value])
-                    .range(['red','green']);
-                    var ColorCode = myScale(value);
-                    return ColorCode;
-                }
-
                 function ColorScaleYear(code, value, year) {
                     var myScale = d3.scaleLinear()
                     .domain([DataProvider.getMinValueYear(code, year).Value,DataProvider.getMaxValueYear(code, year).Value])
@@ -279,7 +271,7 @@ var Visualization = function () {
                             .transition().duration(300)
                             .attr("transform", transformString)
                             .attr('fill',  function(d, i) { 
-                                return ColorScale ('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"),year);
+                                return ColorScaleYear ('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"),year);
                             });
                         break;
                     case"Continent":
@@ -324,7 +316,7 @@ var Visualization = function () {
                             .transition().duration(300)
                             .attr("transform", transformString)
                             .attr('fill',  function(d, i) {
-                                return ColorScale ('21032', DataProvider.getAverageForRegion(d.properties.subregion,"2010","21032"),year);
+                                return ColorScaleYear ('21032', DataProvider.getAverageForRegion(d.properties.subregion,"2010","21032"),year);
                             });
                         cont = null;
                         break;
@@ -353,7 +345,7 @@ var Visualization = function () {
                     return d.properties.name;
                     })
                 .attr('fill',  function(d, i) {
-                    return ColorScale ('21032', DataProvider.getAverageForRegion(d.properties.subregion,year,"21032"),year);
+                    return ColorScaleYear('21032', DataProvider.getAverageForRegion(d.properties.subregion,year,"21032"),year);
                 })
                 .on("mouseover", function(d, i) {
                     handleMouseOver(d.properties.continent, d.properties.name);
@@ -382,9 +374,9 @@ var Visualization = function () {
                             return "rgb(150,150,150)";
                         }
                         if (view=="World") {
-                            return ColorScale ('21032', DataProvider.getAverageForContinent(d.properties.continent,year,"21032"),year);
+                            return ColorScaleYear ('21032', DataProvider.getAverageForContinent(d.properties.continent,year,"21032"),year);
                         } else if (view=="Continent") {
-                            return ColorScale ('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"),year);
+                            return ColorScaleYear ('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"),year);
                         }
                     });
                     //drawGeodata();
