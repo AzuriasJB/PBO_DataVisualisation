@@ -21,7 +21,7 @@ var Visualization = function () {
                 var height = window.innerHeight;
                 console.log("W: " + width + " / H: " + height);
 
-                var svg = d3.select('body').append('svg');
+                var svg = d3.select('svg');
                     
                 var projection = d3.geoMercator().scale(175).translate([width/2, (height/2)+100]);
                     
