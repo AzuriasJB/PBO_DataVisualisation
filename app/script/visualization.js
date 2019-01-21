@@ -374,7 +374,7 @@ var Visualization = function () {
                             return "rgb(150,150,150)";
                         }
                         if (view=="World") {
-                            return ColorScaleYear ('21032', DataProvider.getAverageForContinent(d.properties.continent,year,"21032"),year);
+                            return ColorScaleYear ('21032', DataProvider.getAverageForRegion(d.properties.subregion,year,"21032"),year);
                         } else if (view=="Continent") {
                             return ColorScaleYear ('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"),year);
                         }
