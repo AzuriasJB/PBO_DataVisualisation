@@ -261,6 +261,9 @@ var Visualization = function () {
                             .attr("transform", transformString)
                             .attr('fill',  function(d, i) { 
                                 return ColorScaleYear ('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"),year);
+                            })
+                            .on('end', function (){
+                                hover = true;
                             });
                         break;
                     case"Continent":
@@ -306,13 +309,15 @@ var Visualization = function () {
                             .attr("transform", transformString)
                             .attr('fill',  function(d, i) {
                                 return ColorScaleYear ('21032', DataProvider.getAverageForRegion(d.properties.subregion,"2010","21032"),year);
+                            })
+                            .on('end', function (){
+                                hover = true;
                             });
                         cont = null;
                         break;
                     default:
                         break;
                     }
-                    hover = true;
                 };
 
                 // background rect for minimizing continents
