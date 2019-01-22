@@ -35,6 +35,8 @@ var Visualization = function () {
                 var view = "World";
                 var cont = "";
                 var CompareList = [];
+                var previousCircleOffset = 0;
+                var yPosCircleSidebar = 0;
 
                 function ColorScaleYear(code, value, year) {
                     var myScale = d3.scaleLinear()
@@ -118,7 +120,6 @@ var Visualization = function () {
                                         .attr("height", "10");
                                 
                                 svg.selectAll('circle')
-                                //.filter(function (d) { return d3.select(this).attr('id') == 'hoverCircle';})
                                 .data(data.features)
                                 .enter()
                                 .filter(function(d) { return d.properties.name == country})
@@ -282,10 +283,17 @@ var Visualization = function () {
                     case"Continent":
                         //Add selected Country to List
                         if (continent == cont){
+                            if (CompareList.includes(iso_a3)) {
+                                //click results in freezing hover
+
+                                /*hover = false;
+                                cont = null;
+                                break;*/
+                            } //iso_a3 sometimes equals -99 (Kosovo for example)
                             CompareList.push(iso_a3);
                             console.log(CompareList);
                             hover = true;
-
+                            
                             sidebar.selectAll("circle")
                             .data(data.features)
                             .enter()
@@ -299,12 +307,19 @@ var Visualization = function () {
                             })
                             .attr('cx', function(d) {
                                 if (d.properties.iso_a3 == iso_a3) {
-                                    return 10+20+circleOffset;
+                                    return 30+circleOffset;
                                 }
                             })
                             .attr('cy', function(d) {
                                 if (d.properties.iso_a3 == iso_a3) {
-                                    return 30+(circleOffset)+50*CompareList.length;
+                                    if (yPosCircleSidebar == 0) {
+                                        yPosCircleSidebar = 30 + circleOffset;
+                                        previousCircleOffset = circleOffset;
+                                        return yPosCircleSidebar
+                                    }
+                                    yPosCircleSidebar += 60 + previousCircleOffset + circleOffset;
+                                    previousCircleOffset = circleOffset;
+                                    return yPosCircleSidebar;
                                 }
                             })
                             .attr('stroke','black')
@@ -319,14 +334,14 @@ var Visualization = function () {
                                 {
                                     circlePercent = "100";
 
-                                    /*svg.append("text")
-                                    .attr("x", function(d){return 10+20+circleOffset;})
-                                    .attr("y", function(d){return 10+20+circleOffset;})
+                                    sidebar.append("text")
+                                    .attr("x", function(d){return 30+circleOffset;})
+                                    .attr("y", function(d){return yPosCircleSidebar+5;})
                                     .attr("text-anchor", "middle") 
                                     .attr("font-weight", "bold")
                                     .style('fill', function(d){return circleColor;})
                                     .style("font-size", "18px")
-                                    .text("n.a.");*/
+                                    .text("n.a.");
 
                                     return "url(#diagonalSchraffur)";
                                 } else {
