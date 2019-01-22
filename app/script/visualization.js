@@ -443,10 +443,10 @@ var Visualization = function () {
                             if (CompareList.includes(iso_a3)) {
                                 //sidebar.selectAll("circle[id=circleSidebar-"+iso_a3+"]").remove();
                                 CompareList = CompareList.filter(region => region != iso_a3);
-                                hover = true;
-                                break;
                             }
-                            CompareList.push(iso_a3);
+                            else{
+                                CompareList.push(iso_a3);
+                            }
                             console.log(CompareList);
                             hover = true;
                             sidebar.selectAll('circle').remove();
