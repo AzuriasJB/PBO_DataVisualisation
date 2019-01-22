@@ -37,8 +37,6 @@ var Visualization = function () {
                 var view = "World";
                 var cont = "";
                 var CompareList = [];
-                var previousCircleOffset = 0;
-                var yPosCircleSidebar = 0;
 
                 function ColorScaleYear(code, value, year) {
                     var myScale = d3.scaleLinear()
@@ -82,6 +80,162 @@ var Visualization = function () {
                 });
                 for (i = 0; i<dataContinent.length;i++) {
                     continentColors[i]=ColorScaleYear('22013', dataContinent[i], year);
+                }
+
+                function drawList() {
+                    var previousCircleOffset = 0;
+                    var yPosCircleSidebar = 0;
+                    var circleOffset = [];
+
+                    sidebar.selectAll("circle")
+                    .data(data.features)
+                    .enter()
+                    .filter(function(d) {
+                        if (CompareList.includes(d.properties.iso_a3)) {
+                            return d.properties.iso_a3;
+                        }
+                    })
+                    .append('circle')
+                    .attr('id', function(d) {
+                        return "circleSidebar-"+d.properties.iso_a3;
+                    })
+                    .attr('r',function(d, i){ 
+                        circleOffset[i] = new Array(d.properties.iso_a3,SizeScaleYear('22013', DataProvider.getValuebyiso(d.properties.iso_a3,year,"22013"), year));
+                        if (circleOffset[i][1] == false || circleOffset[i][1] == undefined || circleOffset[i][1] !== circleOffset[i][1]) {
+                            circleOffset[i][1] = 0;
+                        }
+                        if (circleOffset[i][0] == d.properties.iso_a3) {
+                            return 20+circleOffset[i][1]; 
+                        }
+                    })
+                    .attr('cx', function(d, i) {
+                        if (circleOffset[i][0] == d.properties.iso_a3) {
+                            return 30+circleOffset[i][1];
+                        } 
+                    })
+                    .attr('cy', function(d, i) {
+                        if (circleOffset[i][0] == d.properties.iso_a3) {
+                            if (yPosCircleSidebar == 0) {
+                                yPosCircleSidebar = 30 + circleOffset[i][1];
+                                previousCircleOffset = circleOffset[i][1];
+                                return yPosCircleSidebar
+                            }
+                            yPosCircleSidebar += 80 + previousCircleOffset + circleOffset[i][1];
+                            previousCircleOffset = circleOffset[i][1];
+                            return yPosCircleSidebar;
+                        } 
+                        
+                    })
+                    .attr('stroke','black')
+                    .attr('fill', function(d, i) {
+                        //dynamically change color of the circle diagram
+                        var circleColor = ColorScaleYear('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"), year);
+                        var circlePercent;
+                        var tempData = DataProvider.getValuebyiso(d.properties.iso_a3,year,"210041");
+                        if (tempData == "<2.5") {
+                            circlePercent = "2.5";
+                        } else if (tempData == false || tempData == undefined)
+                        {
+                            circlePercent = "100";
+
+                            //TODO: n.a. text not working in sidebar
+
+                            /*sidebar.selectAll("text")
+                                .data(data.features)
+                                .enter()
+                                .filter(function(d) {
+                                    if (CompareList.includes(d.properties.iso_a3) && (DataProvider.getValuebyiso(d.properties.iso_a3,year,"210041") == false || DataProvider.getValuebyiso(d.properties.iso_a3,year,"210041") == undefined)) {
+                                        return d.properties.iso_a3;
+                                    }
+                                })  
+                                .append("text")
+                                .attr("x", function(d, i){
+                                    if (circleOffset[i][0] == d.properties.iso_a3) { 
+                                        return 30+circleOffset[i][1];
+                                    }
+                                })
+                                .attr("y", function(d){
+                                    var yPosCircleSidebar = sidebar.selectAll("circle[id='circleSidebar-"+d.properties.iso_a3+"']").attr('cy');
+                                    console.log(yPosCircleSidebar);
+                                    return yPosCircleSidebar+5;
+                                })
+                                .attr("text-anchor", "middle") 
+                                .attr("font-weight", "bold")
+                                .style('fill', function(d){return circleColor;})
+                                .style("font-size", "18px")
+                                .text("n.a.");*/
+
+                            return "url(#diagonalSchraffur)";
+                        } else {
+                            circlePercent = tempData;
+                        }
+
+                        var gradSidebar = sidebar.append("defs").selectAll("linearGradient")
+                            .data(data.features)
+                            .enter()
+                            .filter(function(d) {
+                                if (CompareList.includes(d.properties.iso_a3)) {
+                                    return d.properties.iso_a3;
+                                }
+                            })
+                            .append("linearGradient")
+                            .attr("id", function (d) {
+                                return "gradient-"+d.properties.iso_a3;
+                            })
+                            .attr("x1", "0%")
+                            .attr("x2", "0%")
+                            .attr("y1", "100%")
+                            .attr("y2", "0%");
+
+                        gradSidebar.append("stop")
+                            .attr("offset", "0%")
+                            .transition()
+                            .style("stop-color", function (d) {
+                                return ColorScaleYear('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"), year);
+                            })
+                            .attr("offset", function(d,i) {
+                                return (100-parseInt(circlePercent)) + "%";
+                            });;
+
+                        gradSidebar.append("stop")
+                            .attr("offset", "0%")
+                            .transition()
+                            .style("stop-color", "white")
+                            .attr("offset", function(d,i) {
+                                return (100-parseInt(circlePercent)) + "%";
+                            });
+
+                        return ("url(#gradient-"+d.properties.iso_a3+")");
+                    });
+
+                    sidebar.selectAll("foreignObject")
+                        .data(data.features)
+                        .enter()
+                        .filter(function(d) {
+                            if (CompareList.includes(d.properties.iso_a3)) {
+                                return d.properties.iso_a3;
+                            }
+                        })  
+                        .append("foreignObject")
+                        .attr("width", function (d, i) {
+                            if (circleOffset[i][0] == d.properties.iso_a3) { 
+                                return sidebarWidth-circleOffset[i][1]*2;
+                            }
+                        })
+                        .attr("x", function(d, i){
+                            if (circleOffset[i][0] == d.properties.iso_a3) { 
+                                return 60+circleOffset[i][1]*2;
+                            }  
+                        })
+                        .attr("y", function(d){
+                            yPosCircleSidebar = sidebar.selectAll("circle[id='circleSidebar-"+d.properties.iso_a3+"']").attr('cy');
+                            return yPosCircleSidebar-(2.5*fontSize);
+                        })
+                        .append("xhtml:body")
+                        .html(function(d) {
+                            return "<p><b>"+d.properties.name+"</b><br>Undernourishment: "+DataProvider.getValuebyiso(d.properties.iso_a3,year,"210041")+"<br>GDP: "+DataProvider.getValuebyiso(d.properties.iso_a3,year,"22013")+"<br>Political stability: "+DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032")+"</p>";
+                        });
+                    
                 }
                     
                 function handleMouseOver(continent, country) {
@@ -295,102 +449,10 @@ var Visualization = function () {
                             CompareList.push(iso_a3);
                             console.log(CompareList);
                             hover = true;
-                            var country;
-
-                            sidebar.selectAll("circle")
-                            .data(data.features)
-                            .enter()
-                            .filter(function(d) {return d.properties.iso_a3 == iso_a3})
-                            .append('circle')
-                            .attr('id', function(d) {
-                                return "circleSidebar-"+iso_a3;
-                            })
-                            .attr('r',function(d){ 
-                                return 20+circleOffset; 
-                            })
-                            .attr('cx', function(d) {
-                                if (d.properties.iso_a3 == iso_a3) {
-                                    return 30+circleOffset;
-                                }
-                            })
-                            .attr('cy', function(d) {
-                                if (d.properties.iso_a3 == iso_a3) {
-                                    if (yPosCircleSidebar == 0) {
-                                        yPosCircleSidebar = 30 + circleOffset;
-                                        previousCircleOffset = circleOffset;
-                                        return yPosCircleSidebar
-                                    }
-                                    yPosCircleSidebar += 80 + previousCircleOffset + circleOffset;
-                                    previousCircleOffset = circleOffset;
-                                    return yPosCircleSidebar;
-                                }
-                            })
-                            .attr('stroke','black')
-                            .attr('fill', function(d,i) {
-                                //dynamically change color of the circle diagram
-                                country = d.properties.name;
-                                var circleColor = ColorScaleYear('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"), year);
-                                var circlePercent;
-                                var tempData = DataProvider.getValuebyiso(d.properties.iso_a3,year,"210041");
-                                if (tempData == "<2.5") {
-                                    circlePercent = "2.5";
-                                } else if (tempData == false || tempData == undefined)
-                                {
-                                    circlePercent = "100";
-
-                                    sidebar.append("text")
-                                    .attr("x", function(d){return 30+circleOffset;})
-                                    .attr("y", function(d){return yPosCircleSidebar+5;})
-                                    .attr("text-anchor", "middle") 
-                                    .attr("font-weight", "bold")
-                                    .style('fill', function(d){return circleColor;})
-                                    .style("font-size", "18px")
-                                    .text("n.a.");
-
-                                    return "url(#diagonalSchraffur)";
-                                } else {
-                                    circlePercent = tempData;
-                                }
-
-                                var gradSidebar = sidebar.append("defs").selectAll("linearGradient")
-                                    .data(data.features)
-                                    .enter()
-                                    .filter(function(d) {return d.properties.iso_a3 == iso_a3})
-                                    .append("linearGradient")
-                                    .attr("id", function (d) {
-                                        return "gradient-"+iso_a3;
-                                    })
-                                    .attr("x1", "0%")
-                                    .attr("x2", "0%")
-                                    .attr("y1", "100%")
-                                    .attr("y2", "0%");
-
-                                gradSidebar.append("stop")
-                                    .attr("offset", "0%")
-                                    .transition()
-                                    .style("stop-color", circleColor)
-                                    .attr("offset", function(d,i) {
-                                        return (100-parseInt(circlePercent)) + "%";
-                                    });;
-
-                                gradSidebar.append("stop")
-                                    .attr("offset", "0%")
-                                    .transition()
-                                    .style("stop-color", "white")
-                                    .attr("offset", function(d,i) {
-                                        return (100-parseInt(circlePercent)) + "%";
-                                    });
-
-                                return ("url(#gradient-"+iso_a3+")");
-                            });
-
-                            sidebar.append("foreignObject")
-                                .attr("width", function (d) {return sidebarWidth-circleOffset*2;})
-                                .attr("x", function(d){return 60+circleOffset*2;})
-                                .attr("y", function(d){return yPosCircleSidebar-(2.5*fontSize);})
-                                .append("xhtml:body")
-                                .html("<p><b>"+country+"</b><br>Undernourishment: "+DataProvider.getValuebyiso(iso_a3,year,"210041")+"<br>GDP: "+DataProvider.getValuebyiso(iso_a3,year,"22013")+"<br>Political stability: "+DataProvider.getValuebyiso(iso_a3,year,"21032")+"</p>");
-
+                            sidebar.selectAll('circle').remove();
+                            sidebar.selectAll("foreignObject").remove();
+                            sidebar.selectAll('text').remove();
+                            drawList();
                             break; 
                         }
                         else{
