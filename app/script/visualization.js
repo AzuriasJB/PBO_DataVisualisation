@@ -459,6 +459,9 @@ var Visualization = function () {
                                 removeCountryFromList(iso_a3);
                             }
                             else{
+                                if (CompareList.length == 7) {
+                                    removeCountryFromList(CompareList[0]);
+                                }
                                 CompareList.push(iso_a3);
                             }
                             console.log(CompareList);
