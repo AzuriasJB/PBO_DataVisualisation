@@ -82,10 +82,19 @@ var Visualization = function () {
                     continentColors[i]=ColorScaleYear('22013', dataContinent[i], year);
                 }
 
+                function removeCountryFromList(iso_a3){
+                    CompareList = CompareList.filter(region => region != iso_a3);
+                    drawList();
+                }
+
                 function drawList() {
                     var previousCircleOffset = 0;
                     var yPosCircleSidebar = 0;
                     var circleOffset = [];
+
+                    sidebar.selectAll('circle').remove();
+                    sidebar.selectAll("foreignObject").remove();
+                    sidebar.selectAll('text').remove();
 
                     sidebar.selectAll("circle")
                     .data(data.features)
@@ -206,6 +215,9 @@ var Visualization = function () {
                             });
 
                         return ("url(#gradient-"+d.properties.iso_a3+")");
+                    })
+                    .on("click", function(d, i) {
+                        removeCountryFromList(d.properties.iso_a3);
                     });
 
                     sidebar.selectAll("foreignObject")
@@ -234,6 +246,9 @@ var Visualization = function () {
                         .append("xhtml:body")
                         .html(function(d) {
                             return "<p><b>"+d.properties.name+"</b><br>Undernourishment: "+DataProvider.getValuebyiso(d.properties.iso_a3,year,"210041")+"<br>GDP: "+DataProvider.getValuebyiso(d.properties.iso_a3,year,"22013")+"<br>Political stability: "+DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032")+"</p>";
+                        })
+                        .on("click", function(d, i) {
+                            removeCountryFromList(d.properties.iso_a3);
                         });
                     
                 }
@@ -441,18 +456,14 @@ var Visualization = function () {
                         if (continent == cont){
                             //and remove it, if it is in the List
                             if (CompareList.includes(iso_a3)) {
-                                //sidebar.selectAll("circle[id=circleSidebar-"+iso_a3+"]").remove();
-                                CompareList = CompareList.filter(region => region != iso_a3);
+                                removeCountryFromList(iso_a3);
                             }
                             else{
                                 CompareList.push(iso_a3);
                             }
                             console.log(CompareList);
-                            hover = true;
-                            sidebar.selectAll('circle').remove();
-                            sidebar.selectAll("foreignObject").remove();
-                            sidebar.selectAll('text').remove();
                             drawList();
+                            hover = true;
                             break; 
                         }
                         else{
