@@ -285,12 +285,12 @@ var Visualization = function () {
                     case"Continent":
                         //Add selected Country to List
                         if (continent == cont){
+                            //and remove it, if it is in the List
                             if (CompareList.includes(iso_a3)) {
-                                //click results in freezing hover
-
-                                /*hover = false;
-                                cont = null;
-                                break;*/
+                                //sidebar.selectAll("circle[id=circleSidebar-"+iso_a3+"]").remove();
+                                CompareList = CompareList.filter(region => region != iso_a3);
+                                hover = true;
+                                break;
                             } //iso_a3 sometimes equals -99 (Kosovo for example)
                             CompareList.push(iso_a3);
                             console.log(CompareList);
