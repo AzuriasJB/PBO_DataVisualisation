@@ -295,7 +295,8 @@ var Visualization = function () {
                             CompareList.push(iso_a3);
                             console.log(CompareList);
                             hover = true;
-                            
+                            var country;
+
                             sidebar.selectAll("circle")
                             .data(data.features)
                             .enter()
@@ -327,6 +328,7 @@ var Visualization = function () {
                             .attr('stroke','black')
                             .attr('fill', function(d,i) {
                                 //dynamically change color of the circle diagram
+                                country = d.properties.name;
                                 var circleColor = ColorScaleYear('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"), year);
                                 var circlePercent;
                                 var tempData = DataProvider.getValuebyiso(d.properties.iso_a3,year,"210041");
@@ -381,21 +383,13 @@ var Visualization = function () {
 
                                 return ("url(#gradient-"+iso_a3+")");
                             });
-                            //TODO: set width of text object depending on sidebar width
-                            /*var country;
-                            DataProvider.getPreparedData().forEach(function (d, i) {
-                                console.log(d.iso_a3);
-                                if (d.iso_a3 == iso_a3) {
-                                    country = d.country;
-                                }
-                            });
-                            console.log("country is "+country);*/
+
                             sidebar.append("foreignObject")
                                 .attr("width", function (d) {return sidebarWidth-circleOffset*2;})
                                 .attr("x", function(d){return 60+circleOffset*2;})
                                 .attr("y", function(d){return yPosCircleSidebar-(2.5*fontSize);})
                                 .append("xhtml:body")
-                                .html("<p><b>"+iso_a3+"</b><br>Undernourishment: "+DataProvider.getValuebyiso(iso_a3,year,"210041")+"<br>GDP: "+DataProvider.getValuebyiso(iso_a3,year,"22013")+"<br>Political stability: "+DataProvider.getValuebyiso(iso_a3,year,"21032")+"</p>");
+                                .html("<p><b>"+country+"</b><br>Undernourishment: "+DataProvider.getValuebyiso(iso_a3,year,"210041")+"<br>GDP: "+DataProvider.getValuebyiso(iso_a3,year,"22013")+"<br>Political stability: "+DataProvider.getValuebyiso(iso_a3,year,"21032")+"</p>");
 
                             break; 
                         }
