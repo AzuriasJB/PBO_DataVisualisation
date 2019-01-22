@@ -576,7 +576,7 @@ var Visualization = function () {
                     .select('div#slider')
                     .append('svg')
                     .append('g')
-                    .attr('transform', 'translate(' + 0.1785*width + ',30)');
+                    .attr('transform', 'translate(' + (width-616)/2 + ',30)');
 
                 gTime.call(sliderTime);
             })
