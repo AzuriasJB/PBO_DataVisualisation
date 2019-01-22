@@ -22,12 +22,14 @@ var Visualization = function () {
                 console.log("W: " + width + " / H: " + height);
 
                 var svg = d3.select('svg');
+                var sidebar = d3.select('.sidebar_container').select('svg');
                     
                 var projection = d3.geoMercator().scale(175).translate([(width/2)-200, (height/2)+100]);
                     
                 var path = d3.geoPath()
                 .projection(projection);
                     
+                var circleOffset;
                 var countryColors = {};
                 var hover = true;
                 var view = "World";
@@ -114,12 +116,14 @@ var Visualization = function () {
                                         .attr("y", "0")
                                         .attr("width", "10")
                                         .attr("height", "10");
-                                var circleOffset;
+                                
                                 svg.selectAll('circle')
+                                //.filter(function (d) { return d3.select(this).attr('id') == 'hoverCircle';})
                                 .data(data.features)
                                 .enter()
                                 .filter(function(d) { return d.properties.name == country})
                                 .append('circle')
+                                .attr('id', 'hoverCircle')
                                 .attr('r',function(d){ 
                                     circleOffset = SizeScaleYear('22013', DataProvider.getValuebyiso(d.properties.iso_a3,year,"22013"), year);
                                     if (circleOffset == false || circleOffset == undefined || circleOffset !== circleOffset) {
@@ -178,7 +182,7 @@ var Visualization = function () {
 
                                     return "url(#grad)";
                                 });
-
+                                //console.log(svg);
                                 svg.append("text")
                                 .attr("x", function(d){return d3.mouse(this)[0]+40+circleOffset;})
                                 .attr("y", function(d){return d3.mouse(this)[1]-40;})
@@ -281,6 +285,86 @@ var Visualization = function () {
                             CompareList.push(iso_a3);
                             console.log(CompareList);
                             hover = true;
+
+                            sidebar.selectAll("circle")
+                            .data(data.features)
+                            .enter()
+                            .filter(function(d) {return d.properties.iso_a3 == iso_a3})
+                            .append('circle')
+                            .attr('id', function(d) {
+                                return "circleSidebar-"+iso_a3;
+                            })
+                            .attr('r',function(d){ 
+                                return 20+circleOffset; 
+                            })
+                            .attr('cx', function(d) {
+                                if (d.properties.iso_a3 == iso_a3) {
+                                    return 10+20+circleOffset;
+                                }
+                            })
+                            .attr('cy', function(d) {
+                                if (d.properties.iso_a3 == iso_a3) {
+                                    return 30+(circleOffset)+50*CompareList.length;
+                                }
+                            })
+                            .attr('stroke','black')
+                            .attr('fill', function(d,i) {
+                                //dynamically change color of the circle diagram
+                                var circleColor = ColorScaleYear('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"), year);
+                                var circlePercent;
+                                var tempData = DataProvider.getValuebyiso(d.properties.iso_a3,year,"210041");
+                                if (tempData == "<2.5") {
+                                    circlePercent = "2.5";
+                                } else if (tempData == false || tempData == undefined)
+                                {
+                                    circlePercent = "100";
+
+                                    /*svg.append("text")
+                                    .attr("x", function(d){return 10+20+circleOffset;})
+                                    .attr("y", function(d){return 10+20+circleOffset;})
+                                    .attr("text-anchor", "middle") 
+                                    .attr("font-weight", "bold")
+                                    .style('fill', function(d){return circleColor;})
+                                    .style("font-size", "18px")
+                                    .text("n.a.");*/
+
+                                    return "url(#diagonalSchraffur)";
+                                } else {
+                                    circlePercent = tempData;
+                                }
+
+                                var gradSidebar = sidebar.append("defs").selectAll("linearGradient")
+                                    .data(data.features)
+                                    .enter()
+                                    .filter(function(d) {return d.properties.iso_a3 == iso_a3})
+                                    .append("linearGradient")
+                                    .attr("id", function (d) {
+                                        return "gradient-"+iso_a3;
+                                    })
+                                    .attr("x1", "0%")
+                                    .attr("x2", "0%")
+                                    .attr("y1", "100%")
+                                    .attr("y2", "0%");
+
+                                gradSidebar.append("stop")
+                                    .attr("offset", "0%")
+                                    .transition()
+                                    .style("stop-color", circleColor)
+                                    .attr("offset", function(d,i) {
+                                        return (100-parseInt(circlePercent)) + "%";
+                                    });;
+
+                                gradSidebar.append("stop")
+                                    .attr("offset", "0%")
+                                    .transition()
+                                    .style("stop-color", "white")
+                                    .attr("offset", function(d,i) {
+                                        return (100-parseInt(circlePercent)) + "%";
+                                    });
+
+                                return ("url(#gradient-"+iso_a3+")");
+                            });
+
                             break; 
                         }
                         else{
@@ -327,7 +411,7 @@ var Visualization = function () {
                                 });
 
                             // alle anderen Kontinente einblenden
-                                svg.selectAll('path')
+                            svg.selectAll('path')
                                 .filter(function(d) { return d.properties.continent != cont })
                                 .transition().duration(300)
                                 .attr("transform", transformString)
