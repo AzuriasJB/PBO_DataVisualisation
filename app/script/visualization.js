@@ -501,28 +501,18 @@ var Visualization = function () {
                             default:
                                 break;
                             }
+                            //alle Kontinente einblenden
                             svg.selectAll('path')
-                                .filter(function(d) { return d.properties.continent == cont })
-                                .transition().duration(300)
+                                .transition().duration(500)
                                 .attr("transform", transformString)
                                 .attr('fill',  function(d, i) {
                                     return ColorScaleYear ('21032', DataProvider.getAverageForRegion(d.properties.subregion,"2010","21032"),year);
                                 })
+                                .attr('opacity', 1)
                                 .on('end', function (){
                                     hover = true;
                                 });
 
-                            // alle anderen Kontinente einblenden
-                            svg.selectAll('path')
-                                .filter(function(d) { return d.properties.continent != cont })
-                                .transition().duration(300)
-                                .attr("transform", transformString)
-                                .attr('opacity', 1);
-                            /*    
-                            svg.selectAll('path')
-                                .filter(function(d) { return d.properties.continent == cont })
-                                .attr('opacity', 1);
-                                */
                             cont = null;
                             break;
                             }
