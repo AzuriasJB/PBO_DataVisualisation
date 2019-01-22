@@ -477,37 +477,17 @@ var Visualization = function () {
                             svg.selectAll('circle').remove();
                             svg.selectAll('text').remove();
                             
-                            // den angeklickten Kontinent normalisieren
-                            var transformString = "";
-                            switch(continent){
-                            case"Europe":
-                                transformString = "translate(" + (0.85*width) + "," + (0.74*height) + ")scale(1/3)";
-                                break;
-                            case"North America":
-                                transformString = "translate(" + (0.1*width) + "," + (0.45*height) + ")scale(1/2)";
-                                break;
-                            case"South America":
-                                transformString = "translate(" + (0.35*width) + "," + (1.27*height) + ")scale(1/2.5)";
-                                break;
-                            case"Asia":
-                                transformString = "translate(" + (1*width) + "," + (0.9*height) + ")scale(1/2.5)";
-                                break;
-                            case"Africa":
-                                transformString = "translate(" + (0.7*width) + "," + (1.1*height) + ")scale(1/2.5)";
-                                break;
-                            case"Oceania":
-                                transformString = "translate(" + (2.15*width) + "," + (2.35*height) + ")scale(1/4)";
-                                break;
-                            default:
-                                break;
-                            }
-                            //alle Kontinente einblenden
+                            //aktuellen Kontinent in Regionen einfärben
                             svg.selectAll('path')
-                                .transition().duration(500)
-                                .attr("transform", transformString)
+                                .filter(function(d) { return d.properties.continent == cont})
                                 .attr('fill',  function(d, i) {
                                     return ColorScaleYear ('21032', DataProvider.getAverageForRegion(d.properties.subregion,"2010","21032"),year);
-                                })
+                                });
+                            
+                            //alle Kontinente einblenden
+                            svg.selectAll('path')
+                                .transition().duration(300)
+                                .attr("transform", "")
                                 .attr('opacity', 1)
                                 .on('end', function (){
                                     hover = true;
@@ -566,13 +546,20 @@ var Visualization = function () {
                     year = d3.timeFormat('%Y')(val);
                     console.log("New Year is: " + year);
                     svg.selectAll('path')
+                    .filter(function(d) { return d.properties.continent != cont })
                     .attr('fill',  function(d, i) {
-                        if (view=="World") {
-                            return ColorScaleYear ('21032', DataProvider.getAverageForRegion(d.properties.subregion,year,"21032"),year);
-                        } else if (view=="Continent") {
-                            return ColorScaleYear ('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"),year);
-                        }
+                        return ColorScaleYear ('21032', DataProvider.getAverageForRegion(d.properties.subregion,year,"21032"),year);
                     });
+
+                    if (view == "Continent"){
+                        svg.selectAll('path')
+                        .filter(function(d) { return d.properties.continent == cont })
+                        .attr('fill',  function(d, i) {
+                            return ColorScaleYear ('21032', DataProvider.getValuebyiso(d.properties.iso_a3,year,"21032"),year);
+                        });
+                    }
+                    // alle nach region was != cont 
+                    // if view = cont continent nach iso einfärben
                     //drawGeodata();
                 });
 
