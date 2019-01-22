@@ -545,12 +545,15 @@ var Visualization = function () {
                 .on("end", val => {
                     year = d3.timeFormat('%Y')(val);
                     console.log("New Year is: " + year);
+                    //immer alles außer den aktuellen Kontinent in Regionen einfärben
+                    //bei World view ist cont == null, es wird also alles in Regionen eingefärbe
                     svg.selectAll('path')
                     .filter(function(d) { return d.properties.continent != cont })
                     .attr('fill',  function(d, i) {
                         return ColorScaleYear ('21032', DataProvider.getAverageForRegion(d.properties.subregion,year,"21032"),year);
                     });
 
+                    //bei Continent view wird der aktuelle Kontinent in Länder eingefärbt
                     if (view == "Continent"){
                         svg.selectAll('path')
                         .filter(function(d) { return d.properties.continent == cont })
