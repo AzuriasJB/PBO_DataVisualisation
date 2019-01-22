@@ -17,18 +17,20 @@ var Visualization = function () {
                 var min = d3.min(dataTime);
                 var max = d3.max(dataTime);
 
-                var width  = window.innerWidth;
-                var height = window.innerHeight;
-                console.log("W: " + width + " / H: " + height);
-
                 var svg = d3.select('svg');
                 var sidebar = d3.select('.sidebar_container').select('svg');
-                    
+
+                var width  = window.innerWidth;
+                var height = window.innerHeight;
+                var sidebarWidth = sidebar.node().getBoundingClientRect().width;
+                var sidebarHeight = sidebar.node().getBoundingClientRect().height;
+                console.log("W: " + width + " / H: " + height);
+
                 var projection = d3.geoMercator().scale(175).translate([(width/2)-200, (height/2)+100]);
                     
                 var path = d3.geoPath()
                 .projection(projection);
-                    
+                var fontSize = 18;
                 var circleOffset;
                 var countryColors = {};
                 var hover = true;
@@ -317,7 +319,7 @@ var Visualization = function () {
                                         previousCircleOffset = circleOffset;
                                         return yPosCircleSidebar
                                     }
-                                    yPosCircleSidebar += 60 + previousCircleOffset + circleOffset;
+                                    yPosCircleSidebar += 80 + previousCircleOffset + circleOffset;
                                     previousCircleOffset = circleOffset;
                                     return yPosCircleSidebar;
                                 }
@@ -379,6 +381,21 @@ var Visualization = function () {
 
                                 return ("url(#gradient-"+iso_a3+")");
                             });
+                            //TODO: set width of text object depending on sidebar width
+                            /*var country;
+                            DataProvider.getPreparedData().forEach(function (d, i) {
+                                console.log(d.iso_a3);
+                                if (d.iso_a3 == iso_a3) {
+                                    country = d.country;
+                                }
+                            });
+                            console.log("country is "+country);*/
+                            sidebar.append("foreignObject")
+                                .attr("width", function (d) {return sidebarWidth-circleOffset*2;})
+                                .attr("x", function(d){return 60+circleOffset*2;})
+                                .attr("y", function(d){return yPosCircleSidebar-(2.5*fontSize);})
+                                .append("xhtml:body")
+                                .html("<p><b>"+iso_a3+"</b><br>Undernourishment: "+DataProvider.getValuebyiso(iso_a3,year,"210041")+"<br>GDP: "+DataProvider.getValuebyiso(iso_a3,year,"22013")+"<br>Political stability: "+DataProvider.getValuebyiso(iso_a3,year,"21032")+"</p>");
 
                             break; 
                         }
