@@ -291,7 +291,7 @@ var Visualization = function () {
                                 CompareList = CompareList.filter(region => region != iso_a3);
                                 hover = true;
                                 break;
-                            } //iso_a3 sometimes equals -99 (Kosovo for example)
+                            }
                             CompareList.push(iso_a3);
                             console.log(CompareList);
                             hover = true;
