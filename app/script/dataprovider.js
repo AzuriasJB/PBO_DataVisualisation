@@ -104,12 +104,12 @@ var DataProvider = function () {
          * @param {number} code - The numerical code of the parameter (see data source documentation).
          * @return {number} The desired value in the data.
         */
-        getValuebyiso: function(country, year, code) {
+        getValuebyiso: function (country, year, code) {
             var getValueResult;
 
             if (code == 210041) {
-                var yearInt = parseInt(year,10);
-                year = year + "-" + (yearInt+2);
+                var yearInt = parseInt(year, 10);
+                year = year + "-" + (yearInt + 2);
             }
 
             _data.some(function (item) {
@@ -203,7 +203,7 @@ var DataProvider = function () {
             var year = 'unknown';
             _data.forEach(function (item) {
                 var currentValue = Number.parseFloat(item['Value']);
-                if (item['Item Code'] === code && item['Year'] === yearLookUp &&  currentValue < resultMin) {
+                if (item['Item Code'] === code && item['Year'] === yearLookUp && currentValue < resultMin) {
                     resultMin = currentValue;
                     country = item['Area'];
                     year = item['Year'];
