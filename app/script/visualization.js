@@ -92,8 +92,9 @@ var Visualization = function () {
                     var yPosCircleSidebar = 0;
                     var circleOffset = [];
 
-                    sidebar.selectAll('circle').remove();
                     sidebar.selectAll("foreignObject").remove();
+                    sidebar.selectAll('defs').remove();
+                    sidebar.selectAll('circle').remove();
                     sidebar.selectAll('text').remove();
 
                     sidebar.selectAll("circle")
